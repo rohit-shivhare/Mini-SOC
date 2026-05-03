@@ -24,8 +24,8 @@ Open <http://127.0.0.1:5000> in a browser.
 ## Project structure
 ```
 Mini-SOC/
-├─ app.py               # Flask entry point
-├─ database.py          # SQLite helpers
+├─ app.py              # Flask entry point
+├─ database.py         # SQLite helpers
 ├─ modules/            # scanner, secure transfer, network monitor
 ├─ templates/          # HTML UI
 ├─ uploads/            # Uploaded files (ignored by git)
