@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini SOC Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --panel-bg: #151b2b;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent: #3b82f6;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --border: #1e293b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            font-weight: 800;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            color: var(--accent);
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-badge::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--success);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            overflow: hidden;
+            max-height: 400px;
+        }
+
+        .panel h2 {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .table-container {
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        .severity-high { color: var(--danger); font-weight: bold; }
+        .severity-medium { color: var(--warning); font-weight: bold; }
+        .severity-low { color: var(--accent); font-weight: bold; }
+
+        .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+        }
+
+        .tools-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"], input[type="file"] {
+            flex-grow: 1;
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+        
+        input[type="file"] {
+            padding: 5px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Mini SOC Platform</h1>
+        <div class="status-badge">System Active</div>
+    </div>
+
+    <div class="grid">
+        
+        <!-- Network Traffic Monitor -->
+        <div class="panel">
+            <h2>Network Traffic Monitor</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Source IP</th>
+                            <th>Dest IP</th>
+                            <th>Protocol</th>
+                        </tr>
+                    </thead>
+                    <tbody id="traffic-table">
+                        <!-- Data populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- IDS Alerts -->
+        <div class="panel" style="border-color: rgba(239, 68, 68, 0.3);">
+            <h2 style="color: var(--danger);">IDS Alerts</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Type</th>
+                            <th>Source IP</th>
+                            <th>Severity</th>
+                        </tr>
+                    </thead>
+                    <tbody id="alerts-table">
+                         <!-- Data populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Web Vulnerability Scanner -->
+        <div class="panel">
+            <h2>Web Vulnerability Scanner</h2>
+            <div class="tools-panel">
+                <div class="input-group">
+                    <input type="text" id="target-url" placeholder="http://127.0.0.1:5000/dummy" value="http://127.0.0.1:5000/dummy">
+                    <button class="btn" onclick="startScan()">Run Scan</button>
+                </div>
+                <div class="table-container" style="max-height: 200px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scan-results">
+                            <!-- Data populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">
+                    <a href="/dummy" target="_blank" style="color: var(--accent);">View Dummy Target Page</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Secure File Transfer -->
+        <div class="panel">
+            <h2>Secure File Transfer (AES)</h2>
+            <div class="tools-panel">
+                <form id="upload-form" enctype="multipart/form-data">
+                    <div class="input-group">
+                        <input type="file" name="file" id="file-input" required>
+                        <button type="button" class="btn" onclick="uploadFile('encrypt')">Encrypt</button>
+                        <button type="button" class="btn" style="background: var(--success);" onclick="uploadFile('decrypt')">Decrypt</button>
+                    </div>
+                </form>
+                <div id="file-status" style="margin-top: 10px; font-size: 0.9rem; color: var(--text-muted);">
+                    Select a file to encrypt or decrypt.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Fetch Network Traffic
+        function fetchTraffic() {
+            fetch('/api/traffic')
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.getElementById('traffic-table');
+                    tbody.innerHTML = '';
+                    data.forEach(row => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>${row.timestamp.split(' ')[1]}</td>
+                                <td>${row.src_ip}</td>
+                                <td>${row.dst_ip}</td>
+                                <td>${row.protocol}</td>
+                            </tr>
+                        `;
+                    });
+                });
+        }
+
+        // Fetch IDS Alerts
+        function fetchAlerts() {
+            fetch('/api/alerts')
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.getElementById('alerts-table');
+                    tbody.innerHTML = '';
+                    data.forEach(row => {
+                        let severityClass = '';
+                        if(row.severity === 'High') severityClass = 'severity-high';
+                        else if(row.severity === 'Medium') severityClass = 'severity-medium';
+                        else severityClass = 'severity-low';
+
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>${row.timestamp.split(' ')[1]}</td>
+                                <td>${row.type}</td>
+                                <td>${row.source_ip}</td>
+                                <td class="${severityClass}">${row.severity}</td>
+                            </tr>
+                        `;
+                    });
+                });
+        }
+
+        // Run Web Scanner
+        function startScan() {
+            const url = document.getElementById('target-url').value;
+            const resultsBody = document.getElementById('scan-results');
+            resultsBody.innerHTML = '<tr><td colspan="2" style="text-align:center;">Scanning...</td></tr>';
+            
+            fetch('/api/scan', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `url=${encodeURIComponent(url)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                resultsBody.innerHTML = '';
+                if(data.length === 0) {
+                     resultsBody.innerHTML = '<tr><td colspan="2">No vulnerabilities found or connection failed.</td></tr>';
+                }
+                data.forEach(res => {
+                    let statusColor = res[2] === 'Vulnerable' ? 'var(--danger)' : 'var(--success)';
+                    resultsBody.innerHTML += `
+                        <tr>
+                            <td>${res[0]}</td>
+                            <td style="color: ${statusColor}; font-weight: bold;">${res[2]}</td>
+                        </tr>
+                    `;
+                });
+            });
+        }
+
+        // File Upload / Encryption
+        function uploadFile(action) {
+            const fileInput = document.getElementById('file-input');
+            if(fileInput.files.length === 0) {
+                alert('Please select a file first.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('action', action);
+
+            const statusDiv = document.getElementById('file-status');
+            statusDiv.innerHTML = `Processing (${action})...`;
+
+            fetch('/api/file_transfer', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    statusDiv.innerHTML = `<span style="color: var(--success)">Success!</span> <a href="/download/${data.filename}" style="color: var(--accent);">Download File</a>`;
+                } else {
+                    statusDiv.innerHTML = `<span style="color: var(--danger)">Error: ${data.error}</span>`;
+                }
+            });
+        }
+
+        // Polling loop
+        setInterval(fetchTraffic, 2000);
+        setInterval(fetchAlerts, 2000);
+
+        // Initial load
+        fetchTraffic();
+        fetchAlerts();
+    </script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+# .gitignore for Mini‑SOC project
+# Python virtual environments
+.venv/
+.myenv/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment/secret files
+secret.key
+.env
+
+# Uploads folder (generated files, large binaries)
+uploads/
+
+# Database files
+soc_database.db
+soc_database.db-journal
+
+# IDE/editor files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS generated files
+.DS_Store
+Thumbs.db
